@@ -1,0 +1,59 @@
+import streamlit as st
+from langchain_community.document_loaders import  PyPDFLoader
+from langchain_community.vectorstores import FAISS
+from transformers import pipeline
+from sentence_transformers import SentenceTransformer
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+import os 
+
+
+st.set_page_config(page_title="Document based QA bot",layout="wide" )
+st.title("PDF Question Answering with RAG")
+
+uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
+
+if uploaded_file is not None:
+    with st.spinner("Processing PDF"):
+        pdf_path = "temp.pdf"
+        with open(pdf_path,"wb") as f:
+            f.write(uploaded_file.getbuffer())
+
+
+
+        loader = PyPDFLoader(pdf_path)
+        docs = loader.load()
+
+    spliter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
+    chunks = spliter.split_documents(docs)
+
+    model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+
+    def embed_texts(texts):
+        return model.encode(texts, convert_to_numpy=True).tolist()
+    
+    vectorstore = FAISS.from_documents(chunks, embedding=embed_texts)
+
+    qa_pipeline = pipeline("question-answer", model="deepset/roberta-base-squad2")
+
+    def rag_qa(question, top_k=3):
+        docs = vectorstore.similarity_search(question, k=top_k)
+        context = ' '.join(doc.page_content for doc in docs)
+        result = qa_pipeline({
+            'context' : context,
+            'question' : question
+        })
+
+
+
+    query = st.text_input("Ask a question about pdf:")
+
+    if query: 
+        with st.spinner("Searching and answering"):
+            answer, sources = rag_qa(query)
+
+        st.subheader("Answer")
+        st.write(answer)
+
+        st.subheader("Sources")
+        for i, src in enumerate(sources):
+            st.markdown(f"**{i+1}.** {src.metadata}")
