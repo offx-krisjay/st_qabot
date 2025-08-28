@@ -5,6 +5,7 @@ from transformers import pipeline
 from sentence_transformers import SentenceTransformer
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import os 
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
 
 st.set_page_config(page_title="Document based QA bot",layout="wide" )
@@ -26,12 +27,9 @@ if uploaded_file is not None:
     spliter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
     chunks = spliter.split_documents(docs)
 
-    model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
 
-    def embed_texts(texts):
-        return model.encode(texts, convert_to_numpy=True).tolist()
-    
-    vectorstore = FAISS.from_documents(chunks, embedding=embed_texts)
+    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+    vectorstore = FAISS.from_documents(chunks, embedding=embeddings)
 
     qa_pipeline = pipeline("question-answer", model="deepset/roberta-base-squad2")
 
