@@ -35,11 +35,15 @@ if uploaded_file is not None:
 
     def rag_qa(question, top_k=3):
         docs = vectorstore.similarity_search(question, k=top_k)
+        if not docs:
+            return "No relevant information found in PDF",[]
+            
         context = ' '.join(doc.page_content for doc in docs)
         result = qa_pipeline({
             'context' : context,
             'question' : question
         })
+        return result["answer"], docs
 
 
 
