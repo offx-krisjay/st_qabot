@@ -14,7 +14,7 @@ uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
 
 if uploaded_file is not None:
     with st.spinner("Processing PDF"):
-        pdf_path = "temp.pdf"
+        pdf_path = f"temp.pdf"
         with open(pdf_path,"wb") as f:
             f.write(uploaded_file.getbuffer())
 
