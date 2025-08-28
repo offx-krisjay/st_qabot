@@ -31,7 +31,7 @@ if uploaded_file is not None:
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
     vectorstore = FAISS.from_documents(chunks, embedding=embeddings)
 
-    qa_pipeline = pipeline("question-answer", model="deepset/roberta-base-squad2")
+    qa_pipeline = pipeline("question-answering", model="deepset/roberta-base-squad2")
 
     def rag_qa(question, top_k=3):
         docs = vectorstore.similarity_search(question, k=top_k)
