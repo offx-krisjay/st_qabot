@@ -29,7 +29,7 @@ if uploaded_file is not None:
 
 
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-    vectorstore = FAISS.from_documents(chunks, embedding=embeddings)
+    vectorstore = FAISS.from_documents(chunks, embeddings)
 
     qa_pipeline = pipeline("question-answering", model="deepset/roberta-base-squad2")
 
