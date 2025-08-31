@@ -56,6 +56,3 @@ if uploaded_file is not None:
         st.subheader("Answer")
         st.write(answer)
 
-        st.subheader("Sources")
-        for i, src in enumerate(sources):
-            st.markdown(f"**{i+1}.** {src.metadata}")
