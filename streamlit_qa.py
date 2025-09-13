@@ -6,7 +6,7 @@ from sentence_transformers import SentenceTransformer
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import os 
 from langchain_community.embeddings import HuggingFaceEmbeddings
-from datetime import datatime 
+from datetime import datetime 
 
 
 st.set_page_config(page_title="RAG-based QA bot",layout="wide" )
