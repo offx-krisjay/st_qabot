@@ -6,10 +6,30 @@ from sentence_transformers import SentenceTransformer
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import os 
 from langchain_community.embeddings import HuggingFaceEmbeddings
+from datetime import datatime 
 
 
-st.set_page_config(page_title="Document based QA bot",layout="wide" )
+st.set_page_config(page_title="RAG-based QA bot",layout="wide" )
 st.title("PDF Question Answering with RAG")
+year = datetime.now().year
+footer = f"""
+<div style="
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    padding: 8px 0;
+    background: rgba(255,255,255,0.0); /* transparent bg */
+    color: #6b7280;
+    font-size: 12px;
+    z-index: 9999;
+">
+    © {year} Muralikrishna
+</div>
+"""
+st.markdown(footer, unsafe_allow_html=True)
+
 
 uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
 
